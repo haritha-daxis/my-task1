@@ -41,9 +41,8 @@
                 <thead>
                     <tr>
                         <th>Id</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Category</th>
+                        <th>category Name</th>
+                        <th>Category description</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -62,35 +61,36 @@
                         method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id">
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Product Name</label>
+                            <label for="name" class="col-sm-2 control-label">Category Name</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter Product Name" maxlength="50" required="">
+                                <input type="text" class="form-control" id="category_id" name="category_id"
+                                    placeholder="Enter Category id(short words)" maxlength="50" required="">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Product price</label>
+                            <label for="name" class="col-sm-2 control-label">Category description</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="price" name="price"
-                                    placeholder="Enter Product price" maxlength="50" required="">
+                                <input type="text" class="form-control" id="desc" name="desc"
+                                    placeholder="Enter description " maxlength="50" required="">
                             </div>
                         </div>
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Category</label>
                             <div class="col-sm-12">
                                 {{-- my drop down using models  --}}
-                                <select class="js-states browser-default select2" name="category" id="category">
+                                {{-- <select class="js-states browser-default select2" name="category" id="category">
                                     <option value="" disabled selected>Category</option>
                                     @foreach ($category as $item)
-                                       {{-- <option value="$item->category_id"{{$item->category_id ? 'selected' : ''}}>{{ $item->category_name}}</option> --}}
-                                       <option value={{$item->category_id}}>{{ $item->category_id}}</option>
+                                       <option value="$item->category_id"{{$item->category_id ? 'selected' : ''}}>{{ $item->category_name}}</option>
+                                       {{-- <option value={{$item->category_id}}>{{ $item->category_name}}</option> --}}
 
                                        {{-- <option value="$item->category_id">{{ $item->category_name}}</option> --}}
-                                       @endforeach
+                                       {{-- @endforeach
 
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
+
 
                         <div class="col-sm-offset-2 col-sm-10">
                             <button type="submit" class="btn btn-primary" id="btn-save" value="create">Save changes
@@ -115,7 +115,8 @@
         <!-- end bootstrap model -->
 </body>
 <script>
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" >
+</script>
 <script type="text/javascript">
     $(document).ready(function() {
         $.ajaxSetup({
@@ -126,22 +127,20 @@
         $('#ajax-crud-datatable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('product') }}",
+            ajax: "{{ url('category') }}",
             columns: [{
                     data: 'id',
                     name: 'id'
                 },
                 {
-                    data: 'product_name',
-                    name: 'name'
+                    data: 'category_id',
+                    name: 'category_id'
                 },
                 {
-                    data: 'price',
-                    name: 'price'
+                    data: 'category_desc',
+                    name: 'desc'
                 },
-                 {
-                    data: 'category_id', name: 'category' },
-               // { data: 'created_at', name: 'created_at' },
+
                 {
                     data: 'action',
                     name: 'action',
@@ -159,7 +158,7 @@
 
         $('#productForm').trigger("reset");
       //  $('#category').trigger("reset");
-        $('#productModal').html("Add Product");
+        $('#productModal').html("Add Category");
         $('#product-modal').modal('show');
         $('#id').val('');
     }
@@ -168,19 +167,19 @@
     function editFunc(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('edit-product') }}",
+            url: "{{ url('edit-category') }}",
             data: {
-                id: id
+               id: id
             },
             dataType: 'json',
             success: function(res) {
-                $('#productModal').html("Edit product");
+                $('#productModal').html("Edit Category");
                 $('#product-modal').modal('show');
                 $('#id').val(res.id);
-                $('#name').val(res.product_name);
-              $('#category').val(res.category_id).trigger('change');
-              console.log(val(res.category))
-                $('#price').val(res.price);
+                $('#category_id').val(res.category_id);
+              $('#name').val(res.category_desc);
+              console.log(val(res.name))
+
             }
         });
     }
@@ -191,9 +190,9 @@
             // ajax
             $.ajax({
                 type: "POST",
-                url: "{{ url('delete-product') }}",
+                url: "{{ url('delete-category') }}",
                 data: {
-                    id: id
+                   id: id
                 },
                 dataType: 'json',
                 success: function(res) {
@@ -208,7 +207,7 @@
         var formData = new FormData(this);
         $.ajax({
             type: 'POST',
-            url: "{{ url('store-product') }}",
+            url: "{{ url('store-category') }}",
             data: formData,
             cache: false,
             contentType: false,
@@ -237,18 +236,17 @@
     function editFunc(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('edit-product') }}",
+            url: "{{ url('edit-category') }}",
             data: {
                 id: id
             },
             dataType: 'json',
             success: function(res) {
-                $('#productModal').html("Edit Product");
+                $('#productModal').html("Edit Category");
                 $('#product-modal').modal('show');
                 $('#id').val(res.id);
-                $('#name').val(resproduct_name);
-                $('#price').val(res.price);
-                $('#category').val(res.category_id);
+                $('#category_id').val(res.category_id);
+                $('#name').val(res.category_desc);
             }
         });
     }

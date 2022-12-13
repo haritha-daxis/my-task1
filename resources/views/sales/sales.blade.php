@@ -40,10 +40,10 @@
             <table class="table table-bordered" id="ajax-crud-datatable">
                 <thead>
                     <tr>
-                        <th>Id</th>
-                        <th>Name</th>
-                        <th>Price</th>
-                        <th>Category</th>
+                        <th>Invoice No</th>
+                        <th>Customer Name</th>
+                        <th>Product Name</th>
+                        <th>Qty</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -62,33 +62,58 @@
                         method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id">
                         <div class="form-group">
+                            <label for="name" class="col-sm-2 control-label">Customer Name</label>
+                            <div class="col-sm-12">
+                                {{-- <input type="text" class="form-control" id="cust_name" name="cust_name"
+                                    placeholder="Enter Customer Name" maxlength="50" required=""> --}}
+                           {{-- selection starts --}}
+
+                           <select class="js-states browser-default select2" name="cust_name" id="cust_name">
+                            <option value="" disabled selected>Customer</option>
+                            @foreach ($customer as $data)
+                               {{-- <option value="$item->category_id"{{$item->category_id ? 'selected' : ''}}>{{ $item->category_name}}</option> --}}
+                               <option value={{$data->id}}>{{ $data->customer_name}}</option>
+
+                               {{-- <option value="$item->category_id">{{ $item->category_name}}</option> --}}
+                               @endforeach
+
+                        </select>
+
+
+                           {{-- end --}}
+
+                                </div>
+                        </div>
+                        <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Product Name</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter Product Name" maxlength="50" required="">
-                            </div>
+                                {{-- <input type="text" class="form-control" id="prod_name" name="prod_name"
+                                    placeholder="Enter product Name" maxlength="50" required=""> --}}
+{{--  --}}
+
+
+                    <select class="js-states browser-default select2" name="prod_name" id="prod_name">
+                         <option value="" disabled selected>Product</option>
+                              @foreach ($product as $item)
+                                           {{-- <option value="$item->category_id"{{$item->category_id ? 'selected' : ''}}>{{ $item->category_name}}</option> --}}
+                                  <option value={{$item->product_name}}>{{ $item->product_name}}</option>
+
+                                         {{-- <option value="$item->category_id">{{ $item->category_name}}</option> --}}
+                              @endforeach
+
+                            </select>
+
+
+
+{{--  --}}
+
+                                </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Product price</label>
+                            <label for="name" class="col-sm-2 control-label">Quantity</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="price" name="price"
-                                    placeholder="Enter Product price" maxlength="50" required="">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Category</label>
-                            <div class="col-sm-12">
-                                {{-- my drop down using models  --}}
-                                <select class="js-states browser-default select2" name="category" id="category">
-                                    <option value="" disabled selected>Category</option>
-                                    @foreach ($category as $item)
-                                       {{-- <option value="$item->category_id"{{$item->category_id ? 'selected' : ''}}>{{ $item->category_name}}</option> --}}
-                                       <option value={{$item->category_id}}>{{ $item->category_id}}</option>
-
-                                       {{-- <option value="$item->category_id">{{ $item->category_name}}</option> --}}
-                                       @endforeach
-
-                                </select>
+                                <input type="number" class="form-control" id="qty" name="qty"
+                                    placeholder="Enter qty" maxlength="50" required="">
                             </div>
                         </div>
 
@@ -115,7 +140,7 @@
         <!-- end bootstrap model -->
 </body>
 <script>
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+<script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
 <script type="text/javascript">
     $(document).ready(function() {
         $.ajaxSetup({
@@ -126,22 +151,23 @@
         $('#ajax-crud-datatable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('product') }}",
+            ajax: "{{ url('sales') }}",
             columns: [{
                     data: 'id',
                     name: 'id'
                 },
                 {
-                    data: 'product_name',
-                    name: 'name'
+                    data: 'customer_id',
+                    name: 'cust_name'
                 },
                 {
-                    data: 'price',
-                    name: 'price'
+                    data: 'product_name',
+                    name: 'prod_name'
                 },
-                 {
-                    data: 'category_id', name: 'category' },
-               // { data: 'created_at', name: 'created_at' },
+                {
+                    data: 'sales_qty',
+                    name: 'qty'
+                },
                 {
                     data: 'action',
                     name: 'action',
@@ -168,19 +194,20 @@
     function editFunc(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('edit-product') }}",
+            url: "{{ url('edit-sales') }}",
             data: {
                 id: id
             },
             dataType: 'json',
             success: function(res) {
-                $('#productModal').html("Edit product");
+                $('#productModal').html("Edit Customer");
                 $('#product-modal').modal('show');
                 $('#id').val(res.id);
-                $('#name').val(res.product_name);
-              $('#category').val(res.category_id).trigger('change');
-              console.log(val(res.category))
-                $('#price').val(res.price);
+                $('#cust_name').val(res.customer_id);
+                $('#prod_name').val(res.product_name);
+                $('#qty').val(res.sales_qty);
+                console.log(val(res.sales_qty))
+              //  $('#price').val(res.email);
             }
         });
     }
@@ -191,7 +218,7 @@
             // ajax
             $.ajax({
                 type: "POST",
-                url: "{{ url('delete-product') }}",
+                url: "{{ url('delete-customer') }}",
                 data: {
                     id: id
                 },
@@ -208,7 +235,7 @@
         var formData = new FormData(this);
         $.ajax({
             type: 'POST',
-            url: "{{ url('store-product') }}",
+            url: "{{ url('store-sales') }}",
             data: formData,
             cache: false,
             contentType: false,
@@ -237,7 +264,7 @@
     function editFunc(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('edit-product') }}",
+            url: "{{ url('edit-sales') }}",
             data: {
                 id: id
             },
@@ -246,9 +273,9 @@
                 $('#productModal').html("Edit Product");
                 $('#product-modal').modal('show');
                 $('#id').val(res.id);
-                $('#name').val(resproduct_name);
-                $('#price').val(res.price);
-                $('#category').val(res.category_id);
+                $('#cust_name').val(res.customer_id);
+                $('#prod_name').val(res.product_name);
+                $('#qty').val(res.sales_qty);
             }
         });
     }

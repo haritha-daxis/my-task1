@@ -19,7 +19,7 @@ return new class extends Migration
            $table->string('category_id');
              // $table->foreign('id','category_id')->references('id','category_id')->on('category');
              $table->foreign('category_id')->references('category_id')->on('category');
-              $table->string('name');
+              $table->string('product_name')->unique();
               $table->decimal('price',5,2);
 
             $table->timestamps();

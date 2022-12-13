@@ -48,7 +48,7 @@ class TestController extends Controller
       $product =  product::updateOrCreate(['id'=>$productId],
 
        [
-         'name' => $request->name,
+         'product_name' => $request->name,
            'price' => $request->price,
            'category_id' => $request->category
         ]);
@@ -93,26 +93,6 @@ class TestController extends Controller
 
         return Response()->json($product);
     }
-    public function salesReport()
-    {
-        $data=sale::get();
-        // return $data;
-        return Response()->json($data);
-    }
-    public function customerReport()
-    {
-        $data=customer::get();
-        return $data;
-    }
-    public function categoryReport()
-    {
-        $data=Category::get();
-        return $data;
-    }
-    public function productReport()
-    {
-        $data=product::get();
-        return $data;
-    }
+
 }
 

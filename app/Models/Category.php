@@ -13,8 +13,8 @@ class Category extends Model
     use HasFactory;
     //
 protected $table='category';
-//protected $primaryKey='category_id';
-protected $fillable = ['category_name'];
+protected $primaryKey='id';
+protected $fillable = ['category_id','category_desc'];
 
     // protected $guarded = [];
     // public function subcategories(){

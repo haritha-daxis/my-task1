@@ -10,5 +10,6 @@ class sale extends Model
     use HasFactory;
     protected $table='sales';
     protected $primaryKey='sales_id';
-    protected $fillable=['sales_item','sales_qty','customer_id'];
+    protected $foreignKey='product_name';
+    protected $fillable=['product_name','sales_qty','customer_id'];
 }

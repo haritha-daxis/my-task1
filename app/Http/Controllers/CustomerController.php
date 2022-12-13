@@ -1,107 +1,94 @@
 <?php
+
 namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Controllers;
 use App\Models\Customer;
 use Illuminate\Http\Request;
+
+
 class CustomerController extends Controller
 {
-/**
-* Display a listing of the resource.
-*
-* @return \Illuminate\Http\Response
-*/
-public function index()
-{
-$data['customer'] = Customer::orderBy('id','desc')->paginate(5);
-// $data['customer'] = Customer::paginate(5);
-return view('customers.index', $data);
-}
-/**
-* Show the form for creating a new resource.
-*
-* @return \Illuminate\Http\Response
-*/
-public function create()
-{
-return view('customers.create');
-}
-/**
-* Store a newly created resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @return \Illuminate\Http\Response
-*/
-public function store(Request $request)
-{
-$request->validate([
-'name' => 'required',
-'dob' => 'required',
-'email' => 'required'
+public function index(Request $request)
+        {
 
-]);
-$customer = new Customer;
-$customer->customer_name = $request->name;
-$customer->customer_dob = $request->dob;
-$customer->customer_email = $request->email;
+        //   $categoris = Category::where('parent_id',0)->get();
 
-$customer->save();
+        //   return view('category',["categoris" => $categoris]);
+        if(request()->ajax()) {
+            return datatables()->of(Customer::select('*'))
+            ->addColumn('action', 'customer.customer-action')
+            ->rawColumns(['action'])
+            ->addIndexColumn()
+            ->make(true);
+        }
+      //  $category= Category::all();
+        return view('customer.customer');
+        }
 
-return redirect()->route('customers.index')
-->with('success','Customer has been created successfully.');
-}
-/**
-* Display the specified resource.
-*
-* @param  \App\customer  $customer
-* @return \Illuminate\Http\Response
-*/
-public function show(Customer $customer)
-{
-return view('customers.show',compact('customer'));
-}
-/**
-* Show the form for editing the specified resource.
-*
-* @param  \App\Customer  $company
-* @return \Illuminate\Http\Response
-*/
-public function edit(Customer $customer)
-{
-return view('customers.edit',compact('customer'));
-}
-/**
-* Update the specified resource in storage.
-*
-* @param  \Illuminate\Http\Request  $request
-* @param  \App\company  $company
-* @return \Illuminate\Http\Response
-*/
-public function update(Request $request, $id)
-{
-$request->validate([
-'customer_name' => 'required',
-'customer_dob' => 'required',
-'customer_email' => 'required'
+        public function store(Request $request)
+        {
+            // $parent_id = $request->cat_id;
 
-]);
-$customer = Customer::find($id);
-$customer->customer_name = $request->name;
-$customer->customer_dob = $request->dob;
-$customer->customer_email = $request->email;
+            // $subcategories = Category::where('id',$parent_id)
+            //                       ->with('subcategories')
+            //                       ->get();
+            // return response()->json([
+            //     'subcategories' => $subcategories
+            // ]);
 
-$customer->save();
-return redirect()->route('customers.index')
-->with('success','Customer Has Been updated successfully');
-}
-/**
-* Remove the specified resource from storage.
-*
-* @param  \App\Customer  $customer
-* @return \Illuminate\Http\Response
-*/
-public function destroy(customer $customer)
-{
-$company->delete();
-return redirect()->route('customers.index')
-->with('success' ,'customer has been deleted successfully');
-}
-}
+                $customerId = $request->id;
+                 $customer=Customer::get();
+
+              $customer =  Customer::updateOrCreate(['id'=>$customerId],
+
+               [
+                 'customer_name' => $request->name,
+                   'customer_dob' => $request->dob,
+                   'customer_email' => $request->email
+                ]);
+
+
+                return Response()->json($customer);
+
+            }
+
+
+            /**
+             * Show the form for editing the specified resource.
+             *
+             * @param  \App\company  $company
+             * @return \Illuminate\Http\Response
+             */
+            public function edit(Request $request)
+            {
+               // $category= Category::get();
+                $where = array('id' => $request->id);
+                $customer  = Customer::where($where)->first();
+
+                //  $category= Category::get();
+                //  $category_name=$category->category_name;
+                // $category_id=$product->category_id;
+                // $category=category::array_where(array($category_id => $category_name));
+                //$category= Category::all();
+
+                return Response()->json($customer);
+            }
+
+
+            /**
+             * Remove the specified resource from storage.
+             *
+             * @param  \App\company  $company
+             * @return \Illuminate\Http\Response
+             */
+            public function destroy(Request $request)
+            {
+                $customer = Customer::where('id',$request->id)->delete();
+
+                return Response()->json($customer);
+            }
+        }
+
+

@@ -14,5 +14,5 @@ class product extends Model
     protected $table='product';
     protected $primaryKey ='id';
    //protected $foreignKey ='category_id';
-    protected $fillable = ['name','price','category_id'];
+    protected $fillable = ['product_name','price','category_id'];
 }

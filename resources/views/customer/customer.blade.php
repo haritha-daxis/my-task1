@@ -42,8 +42,8 @@
                     <tr>
                         <th>Id</th>
                         <th>Name</th>
-                        <th>Price</th>
-                        <th>Category</th>
+                        <th>B'day</th>
+                        <th>email</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -62,33 +62,24 @@
                         method="POST" enctype="multipart/form-data">
                         <input type="hidden" name="id" id="id">
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Product Name</label>
+                            <label for="name" class="col-sm-2 control-label">Customer Name</label>
                             <div class="col-sm-12">
                                 <input type="text" class="form-control" id="name" name="name"
-                                    placeholder="Enter Product Name" maxlength="50" required="">
+                                    placeholder="Enter Customer Name" maxlength="50" required="">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Product price</label>
+                            <label for="name" class="col-sm-2 control-label">B'day</label>
                             <div class="col-sm-12">
-                                <input type="text" class="form-control" id="price" name="price"
-                                    placeholder="Enter Product price" maxlength="50" required="">
+                                <input type="date" class="form-control" id="dob" name="dob"
+                                    placeholder="Enter B'day" maxlength="50" required="">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Category</label>
+                            <label for="name" class="col-sm-2 control-label">Email</label>
                             <div class="col-sm-12">
-                                {{-- my drop down using models  --}}
-                                <select class="js-states browser-default select2" name="category" id="category">
-                                    <option value="" disabled selected>Category</option>
-                                    @foreach ($category as $item)
-                                       {{-- <option value="$item->category_id"{{$item->category_id ? 'selected' : ''}}>{{ $item->category_name}}</option> --}}
-                                       <option value={{$item->category_id}}>{{ $item->category_id}}</option>
-
-                                       {{-- <option value="$item->category_id">{{ $item->category_name}}</option> --}}
-                                       @endforeach
-
-                                </select>
+                                <input type="email" class="form-control" id="email" name="email"
+                                    placeholder="Enter Email" maxlength="50" required="">
                             </div>
                         </div>
 
@@ -115,7 +106,8 @@
         <!-- end bootstrap model -->
 </body>
 <script>
-    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" ></script>
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" >
+</script>
 <script type="text/javascript">
     $(document).ready(function() {
         $.ajaxSetup({
@@ -126,21 +118,21 @@
         $('#ajax-crud-datatable').DataTable({
             processing: true,
             serverSide: true,
-            ajax: "{{ url('product') }}",
+            ajax: "{{ url('customer') }}",
             columns: [{
                     data: 'id',
                     name: 'id'
                 },
                 {
-                    data: 'product_name',
+                    data: 'customer_name',
                     name: 'name'
                 },
                 {
-                    data: 'price',
-                    name: 'price'
+                    data: 'customer_dob',
+                    name: 'dob'
                 },
                  {
-                    data: 'category_id', name: 'category' },
+                    data: 'customer_email', name: 'email' },
                // { data: 'created_at', name: 'created_at' },
                 {
                     data: 'action',
@@ -168,19 +160,19 @@
     function editFunc(id) {
         $.ajax({
             type: "POST",
-            url: "{{ url('edit-product') }}",
+            url: "{{ url('edit-customer') }}",
             data: {
                 id: id
             },
             dataType: 'json',
             success: function(res) {
-                $('#productModal').html("Edit product");
+                $('#productModal').html("Edit Customer");
                 $('#product-modal').modal('show');
                 $('#id').val(res.id);
-                $('#name').val(res.product_name);
-              $('#category').val(res.category_id).trigger('change');
-              console.log(val(res.category))
-                $('#price').val(res.price);
+                $('#name').val(res.name);
+              $('#category').val(res.dob);
+              console.log(val(res.email))
+                $('#price').val(res.email);
             }
         });
     }
@@ -191,7 +183,7 @@
             // ajax
             $.ajax({
                 type: "POST",
-                url: "{{ url('delete-product') }}",
+                url: "{{ url('delete-customer') }}",
                 data: {
                     id: id
                 },
@@ -208,7 +200,7 @@
         var formData = new FormData(this);
         $.ajax({
             type: 'POST',
-            url: "{{ url('store-product') }}",
+            url: "{{ url('store-customer') }}",
             data: formData,
             cache: false,
             contentType: false,
@@ -246,9 +238,9 @@
                 $('#productModal').html("Edit Product");
                 $('#product-modal').modal('show');
                 $('#id').val(res.id);
-                $('#name').val(resproduct_name);
-                $('#price').val(res.price);
-                $('#category').val(res.category_id);
+                $('#name').val(res.name);
+                $('#price').val(res.dob);
+                $('#category').val(res.email);
             }
         });
     }
